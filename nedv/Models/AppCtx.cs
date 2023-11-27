@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using nedv.Models.Data;
 
 namespace nedv.Models
 {
@@ -9,5 +10,7 @@ namespace nedv.Models
         {
             Database.EnsureCreated();
         }
+
+        public DbSet<City> Cities { get; set; }
     }
 }

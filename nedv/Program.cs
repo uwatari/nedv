@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
+using nedv.Models.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
