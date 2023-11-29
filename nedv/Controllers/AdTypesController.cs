@@ -2,121 +2,121 @@
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
 using nedv.Models.Data;
-using nedv.ViewModel.Cities;
+using nedv.ViewModel.AdTypes;
 
 namespace nedv.Controllers
 {
-    public class CitiesController : Controller
+    public class AdTypesController : Controller
     {
         private readonly AppCtx _context;
 
-        public CitiesController(AppCtx context)
+        public AdTypesController(AppCtx context)
         {
             _context = context;
         }
 
-        // GET: Cities
+        // GET: AdTypes
         public async Task<IActionResult> Index()
         {
             // через контекст данных получаем доступ к таблице базы данных FormsOfStudy
-            var appCtx = _context.Cities
-                .OrderBy(f => f.CityName);          // сортируем все записи по имени форм обучения
+            var appCtx = _context.AdTypes
+                .OrderBy(f => f.AdTypeName);          // сортируем все записи по имени форм обучения
 
             // возвращаем в представление полученный список записей
             return View(await appCtx.ToListAsync());
         }
 
-        // GET: Cities/Details/5
+        // GET: AdTypes/Details/5
         public async Task<IActionResult> Details(short? id)
         {
-            if (id == null || _context.Cities == null)
+            if (id == null || _context.AdTypes == null)
             {
                 return NotFound();
             }
 
-            var city = await _context.Cities
+            var adType = await _context.AdTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (city == null)
+            if (adType == null)
             {
                 return NotFound();
             }
 
-            return View(city);
+            return View(adType);
         }
 
-        // GET: Cities/Create
+        // GET: AdTypes/Create
         public IActionResult Create()
         {
             return View();
-        }   
+        }
 
-        // POST: Cities/Create
+        // POST: AdTypes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCityViewModel model)
+        public async Task<IActionResult> Create(CreateAdTypeViewModel model)
         {
-            if (_context.Cities
-                .Where(f => f.CityName == model.CityName)
+            if (_context.AdTypes
+                .Where(f => f.AdTypeName == model.AdTypeName)
                 .FirstOrDefault() != null)
             {
-                ModelState.AddModelError("", "Введеный город уже существует");
+                ModelState.AddModelError("", "Введеный тип объявления уже существует");
             }
 
             if (ModelState.IsValid)
             {
-                City genre = new()
+                AdType adtype = new()
                 {
-                    CityName = model.CityName
+                    AdTypeName = model.AdTypeName
                 };
 
-                _context.Add(genre);
+                _context.Add(adtype);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
         }
 
-        // GET: Cities/Edit/5
+        // GET: AdTypes/Edit/5
         public async Task<IActionResult> Edit(short? id)
         {
-            if (id == null || _context.Cities == null)
+            if (id == null || _context.AdTypes == null)
             {
                 return NotFound();
             }
 
-            var genre = await _context.Cities.FindAsync(id);
-            if (genre == null)
+            var adType = await _context.AdTypes.FindAsync(id);
+            if (adType == null)
             {
                 return NotFound();
             }
 
-            EditCityViewModel model = new()
+            EditAdTypeViewModel model = new()
             {
-                Id = genre.Id,
-                CityName = genre.CityName
+                Id = adType.Id,
+                AdTypeName = adType.AdTypeName
             };
             return View(model);
         }
 
-        // POST: Cities/Edit/5
+        // POST: AdTypes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(short id, EditCityViewModel model)
+        public async Task<IActionResult> Edit(short id, EditAdTypeViewModel model)
         {
-            City city = await _context.Cities.FindAsync(id);
+            AdType adType = await _context.AdTypes.FindAsync(id);
 
-            if (_context.Cities
-                .Where(f => f.CityName == model.CityName)
-                .FirstOrDefault() != null)
+            if (_context.AdTypes
+               .Where(f => f.AdTypeName == model.AdTypeName)
+               .FirstOrDefault() != null)
             {
-                ModelState.AddModelError("", "Введеный город уже существует");
+                ModelState.AddModelError("", "Введеный тип объявления уже существует");
             }
 
-            if (id != city.Id)
+            if (id != adType.Id)
             {
                 return NotFound();
             }
@@ -125,13 +125,13 @@ namespace nedv.Controllers
             {
                 try
                 {
-                    city.CityName = model.CityName;
-                    _context.Update(city);
+                    adType.AdTypeName = model.AdTypeName;
+                    _context.Update(adType);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CityExists(city.Id))
+                    if (!AdTypeExists(adType.Id))
                     {
                         return NotFound();
                     }
@@ -145,46 +145,46 @@ namespace nedv.Controllers
             return View(model);
         }
 
-        // GET: Cities/Delete/5
+        // GET: AdTypes/Delete/5
         public async Task<IActionResult> Delete(short? id)
         {
-            if (id == null || _context.Cities == null)
+            if (id == null || _context.AdTypes == null)
             {
                 return NotFound();
             }
 
-            var city = await _context.Cities
+            var adType = await _context.AdTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (city == null)
+            if (adType == null)
             {
                 return NotFound();
             }
 
-            return View(city);
+            return View(adType);
         }
 
-        // POST: Cities/Delete/5
+        // POST: AdTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(short id)
         {
-            if (_context.Cities == null)
+            if (_context.AdTypes == null)
             {
-                return Problem("Entity set 'AppCtx.Cities'  is null.");
+                return Problem("Entity set 'AppCtx.AdTypes'  is null.");
             }
-            var city = await _context.Cities.FindAsync(id);
-            if (city != null)
+            var adType = await _context.AdTypes.FindAsync(id);
+            if (adType != null)
             {
-                _context.Cities.Remove(city);
+                _context.AdTypes.Remove(adType);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CityExists(short id)
+        private bool AdTypeExists(short id)
         {
-          return (_context.Cities?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.AdTypes?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

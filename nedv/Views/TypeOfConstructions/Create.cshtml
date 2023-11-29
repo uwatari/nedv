@@ -1,0 +1,42 @@
+﻿@model nedv.ViewModel.TypeOfConstructions.CreateTypeOfConstructionViewModel
+
+@{
+    ViewData["Title"] = "Добавление - типа постройки";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
+        <li class="breadcrumb-item"><a asp-controller="AdTypes" asp-action="Index">Типы постройки</a></li>
+        <li class="breadcrumb-item active">Добавление</li>
+    </ol>
+</nav>
+
+<h3>
+    <a class="btn text-dark" asp-action="Index" title="Вернуться к списку">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    Добавление типа постройки
+</h3>
+
+<h4>Тип постройки</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TypeOfConstructionName" class="control-label"></label>
+                <input asp-for="TypeOfConstructionName" class="form-control" />
+                <span asp-validation-for="TypeOfConstructionName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Добавить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
