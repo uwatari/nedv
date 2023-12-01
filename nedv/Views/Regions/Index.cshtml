@@ -1,41 +1,36 @@
-﻿@model IEnumerable<nedv.Models.Data.City>
+﻿@model IEnumerable<nedv.Models.Data.Region>
 
 @{
-    ViewData["Title"] = "Города";
+    ViewData["Title"] = "Области";
 }
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
-        <li class="breadcrumb-item active">Города</li>
+        <li class="breadcrumb-item active">Области</li>
     </ol>
 </nav>
-<h2>Города</h2>
+<h2>Области</h2>
 
 <h6>
     <a class="btn text-dark" asp-action="Create">
-        <i class="far fa-plus-square"></i>  Добавить город
+        <i class="far fa-plus-square"></i>  Добавить область
     </a>
 </h6>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CityName)
+                @Html.DisplayNameFor(model => model.RegionName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Region)
-            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CityName)
-            </td>
-            <td> 
-                @Html.DisplayFor(model => item.Region.RegionName)
+                @Html.DisplayFor(modelItem => item.RegionName)
             </td>
             <td>
                     <a class="btn text-dark" asp-action="Details" asp-route-id="@item.Id" title="Посмотреть подробнее">

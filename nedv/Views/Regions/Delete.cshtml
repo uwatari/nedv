@@ -1,13 +1,13 @@
-﻿@model nedv.Models.Data.City
+﻿@model nedv.Models.Data.Region
 
 @{
-    ViewData["Title"] = "Удаление - Города";
+    ViewData["Title"] = "Удаление - Области";
 }
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
-        <li class="breadcrumb-item"><a asp-controller="Cities" asp-action="Index">Города</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Regions" asp-action="Index">Области</a></li>
         <li class="breadcrumb-item active">Удаление</li>
     </ol>
 </nav>
@@ -16,32 +16,24 @@
     <a class="btn text-dark" asp-action="Index" title="Вернуться к списку">
         <i class="fas fa-arrow-left"></i>
     </a>
-    Удаление жанра
+    Удаление области
 </h3>
-
-<h1>Удалить</h1>
 
 <h3>Вы уверены что хотите удалить?</h3>
 <div>
-    <h4>Город</h4>
+    <h4>Область</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CityName)
+            @Html.DisplayNameFor(model => model.RegionName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CityName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Region)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Region.RegionName)
+            @Html.DisplayFor(model => model.RegionName)
         </dd>
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Удалить" class="btn btn-danger" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
     </form>
 </div>

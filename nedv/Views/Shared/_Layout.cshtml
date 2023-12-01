@@ -28,12 +28,88 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cities" asp-action="Index">Города</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Regions" asp-action="Index">Области</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="AdTypes" asp-action="Index">Типы объявления</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="TypeOfConstructions" asp-action="Index">Типы постройки</a>
                         </li>
                     </ul>
+                    @if (IsSectionDefined("Header"))
+                    {
+                        @RenderSection("Header")
+                    }
+                    else
+                    {
+                        //если пользователь вошел в систему
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            // то он видит вкладку "Главная"
+                            <ul class="navbar-nav flex-grow">
+                                <li>
+                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login" title="Главная">
+                                        <i class="fas fa-home"></i>
+                                    </a>
+                                </li>
+
+                                @*если пользователь с ролью админ, то он получает доступ к работе со всеми пользователями системы*@
+                                @if (User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(s => s.Value).Contains("admin"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-controller="Users" asp-action="Index" title="Пользователи">
+                                            <i class="far fa-user"></i>  Пользователи
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+
+                    // с левой стороны, пользователь видит свой свою почту с выпадающим меню
+                            // одним из пункта меню является выход
+                            <ul class="navbar-nav flex-grow">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown">
+                                        <i class="far fa-user-circle"></i>  @User.Identity.Name
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item text-dark" asp-controller="PersonalInfos" asp-action="Index">Личные данные</a>
+                                        <div class="dropdown-item ">
+                                            <form class="form-inline" method="post" asp-controller="Account" asp-action="Logout">
+                                                <div class="form-group">
+                                                    <i class="fas fa-sign-out-alt"></i>
+                                                    <input class="btn btn-link text-dark" type="submit" value="Выход" />
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        }
+                        // если пользователь не вошел на сайт, то для него отображается в качестве главной страницы вход в систему
+                        else
+                        {
+                            <ul class="navbar-nav">
+                                <li>
+                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login" title="Главная">
+                                        <i class="fas fa-home"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">
+                                        <i class="fas fa-sign-in-alt"></i>  Вход
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Регистрация</a>
+                                </li>
+                            </ul>
+                        }
+                    }
+
                 </div>
             </div>
         </nav>

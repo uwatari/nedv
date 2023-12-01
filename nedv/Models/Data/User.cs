@@ -13,6 +13,6 @@ namespace nedv.Models.Data
         [Display(Name = "Фамилия")]
         public string Surname { get; set; }
 
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
     }
 }

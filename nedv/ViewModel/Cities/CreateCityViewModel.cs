@@ -7,5 +7,9 @@ namespace nedv.ViewModel.Cities
         [Required(ErrorMessage = "Введите город")]
         [Display(Name = "Город")]
         public string CityName { get; set; }
+
+        [Required]
+        [Display(Name = "Область")]
+        public short IdRegion { get; set; }
     }
-}
+}   
