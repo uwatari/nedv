@@ -1,0 +1,91 @@
+﻿@model IEnumerable<nedv.Models.Data.Apartment>
+
+@{
+    ViewData["Title"] = "Квартиры";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
+        <li class="breadcrumb-item active">Квартиры</li>
+    </ol>
+</nav>
+<h2>Квартиры</h2>
+
+<h6>
+    <a class="btn text-dark" asp-action="Create">
+        <i class="far fa-plus-square"></i>  Добавить квартиру
+    </a>
+</h6>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CountRoom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfSquareMeters)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Floor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdAdType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeOfConstruction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CountRoom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfSquareMeters)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Floor)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.AdType.AdTypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeOfConstruction.TypeOfConstructionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City.CityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Name)
+            </td>
+            <td>
+                    <a class="btn text-dark" asp-action="Details" asp-route-id="@item.Id" title="Посмотреть подробнее">
+                        <i class="far fa-eye"></i>
+                    </a> |
+                    <a class="btn text-dark" asp-action="Edit" asp-route-id="@item.Id" title="Редактировать">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a> |
+                    <a class="btn text-dark" asp-action="Delete" asp-route-id="@item.Id" title="Удалить">
+                        <i class="far fa-minus-square"></i>
+                    </a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -16,14 +16,26 @@ namespace nedv.Controllers
         }
 
         // GET: AdTypes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            // через контекст данных получаем доступ к таблице базы данных FormsOfStudy
-            var appCtx = _context.RoomTypes
-                .OrderBy(f => f.RoomTypeName);          // сортируем все записи по имени форм обучения
+            ViewData["RoomTypeNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "roomtypename_desc" : "";
 
-            // возвращаем в представление полученный список записей
-            return View(await appCtx.ToListAsync());
+            var roomtype = from s in _context.RoomTypes
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                roomtype = roomtype.Where(s => s.RoomTypeName.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    roomtype = roomtype.OrderByDescending(s => s.RoomTypeName);
+                    break;
+                default:
+                    roomtype = roomtype.OrderBy(s => s.RoomTypeName);
+                    break;
+            }
+            return View(await roomtype.AsNoTracking().ToListAsync());
         }
 
         // GET: AdTypes/Details/5

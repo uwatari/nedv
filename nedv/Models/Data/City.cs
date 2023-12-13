@@ -5,7 +5,7 @@ namespace nedv.Models.Data
 {
     public class City
     {
-       
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public short Id { get; set; }
 
         [Required(ErrorMessage = "Введите город")]

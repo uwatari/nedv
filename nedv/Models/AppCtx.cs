@@ -16,5 +16,7 @@ namespace nedv.Models
         public DbSet<TypeOfConstruction> TypeOfConstructions { get; set; }
         public DbSet<Region> Regions { get; set; }
         public DbSet<RoomType> RoomTypes { get; set; }
+        public DbSet<User> Users {  get; set; }
+        public DbSet<Apartment> Apartments { get; set; }
     }
 }

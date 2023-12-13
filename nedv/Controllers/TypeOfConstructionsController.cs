@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
 using nedv.Models.Data;
@@ -16,14 +17,26 @@ namespace nedv.Controllers
         }
 
         // GET: TypeOfConstructions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            // через контекст данных получаем доступ к таблице базы данных FormsOfStudy
-            var appCtx = _context.TypeOfConstructions
-                .OrderBy(f => f.TypeOfConstructionName);          // сортируем все записи по имени форм обучения
+            ViewData["TypeOfConstructionSortParm"] = String.IsNullOrEmpty(sortOrder) ? "roomtypename_desc" : "";
 
-            // возвращаем в представление полученный список записей
-            return View(await appCtx.ToListAsync());
+            var typeofconstrucrion = from t in _context.TypeOfConstructions
+                           select t;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                typeofconstrucrion = typeofconstrucrion.Where(t => t.TypeOfConstructionName.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    typeofconstrucrion = typeofconstrucrion.OrderByDescending(t => t.TypeOfConstructionName);
+                    break;
+                default:
+                    typeofconstrucrion = typeofconstrucrion.OrderBy(t => t.TypeOfConstructionName);
+                    break;
+            }
+            return View(await typeofconstrucrion.AsNoTracking().ToListAsync());
         }
 
         // GET: TypeOfConstructions/Details/5

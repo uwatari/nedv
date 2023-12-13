@@ -1,0 +1,101 @@
+﻿@model PaginatedList<nedv.Models.Data.User>
+@{
+    ViewData["Title"] = "Пользователи";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
+        <li class="breadcrumb-item active">Пользователи</li>
+    </ol>
+</nav>
+<h2>Пользователи</h2>
+
+<h6>
+    <a class="text-dark" asp-action="Create">
+        <i class="far fa-plus-square"></i>  Добавить пользователя
+    </a>
+</h6>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Поиск по названию: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Поиск" class="btn btn-default" /> |
+            <a asp-action="Index">Вернуться к списку</a>
+        </p>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-bordered text-nowrap table-sm">
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Email</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Имя</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["SurnameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Фамилия</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["RegistrationDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Дата регистрации</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["EmploymentDateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Дата регистрации</a>
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegistrationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmploymentDate)
+                </td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                        <a class="btn text-dark" asp-action="Edit" asp-route-id="@item.Id" title="Редактировать">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a> |
+                        <a class="btn text-dark" asp-action="Delete" asp-route-id="@item.Id" title="Удалить">
+                            <i class="far fa-minus-square"></i>
+                        </a>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

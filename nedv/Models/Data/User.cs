@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace nedv.Models.Data
 {
     public class User : IdentityUser
     {
+
         [Required(ErrorMessage = "Введите имя")]
         [Display(Name = "Имя")]
         public string Name { get; set; }
@@ -13,6 +15,10 @@ namespace nedv.Models.Data
         [Display(Name = "Фамилия")]
         public string Surname { get; set; }
 
-        public DateTime? Birthday { get; set; }
+        [Display(Name = "Дата регистрации")]
+        public DateTime RegistrationDate { get; set; }
+
+        [Display(Name = "Дата приема на работу")]
+        public DateTime EmploymentDate { get; set; }
     }
 }

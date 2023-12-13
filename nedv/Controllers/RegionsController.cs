@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
 using nedv.Models.Data;
@@ -17,14 +18,42 @@ namespace nedv.Controllers
         }
 
         // GET: Regions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            // через контекст данных получаем доступ к таблице базы данных FormsOfStudy
-            var appCtx = _context.Regions
-                .OrderBy(f => f.RegionName);          // сортируем все записи по имени форм обучения
+            ViewData["RegionSortParm"] = String.IsNullOrEmpty(sortOrder) ? "region_desc" : "";
+            ViewData["CurrentSort"] = sortOrder;
 
-            // возвращаем в представление полученный список записей
-            return View(await appCtx.ToListAsync());
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var regions = from r in _context.Regions
+                           select r;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                regions = regions.Where(r => r.RegionName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "region_desc":
+                    regions = regions.OrderByDescending(r => r.RegionName);
+                    break;
+                default:
+                    regions = regions.OrderBy(r => r.RegionName);
+                    break;
+            }
+
+            int pageSize = 5;
+            return View(await PaginatedList<Region>.CreateAsync(regions.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Regions/Details/5

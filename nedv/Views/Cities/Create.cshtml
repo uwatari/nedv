@@ -27,16 +27,16 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="mb-3">
                 <label asp-for="CityName" class="control-label"></label>
                 <input asp-for="CityName" class="form-control" />
                 <span asp-validation-for="CityName" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <label asp-for="IdRegion" class="control-label"></label>
                 <select asp-for="IdRegion" class="form-control" asp-items="ViewBag.IdRegion"></select>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>

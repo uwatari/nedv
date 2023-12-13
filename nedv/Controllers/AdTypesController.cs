@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
 using nedv.Models.Data;
+using nedv.Models.Enums.AdTypeSort;
 using nedv.ViewModel.AdTypes;
 
 namespace nedv.Controllers
@@ -16,14 +19,41 @@ namespace nedv.Controllers
         }
 
         // GET: AdTypes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            // через контекст данных получаем доступ к таблице базы данных FormsOfStudy
-            var appCtx = _context.AdTypes
-                .OrderBy(f => f.AdTypeName);          // сортируем все записи по имени форм обучения
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["CurrentSort"] = sortOrder;
 
-            // возвращаем в представление полученный список записей
-            return View(await appCtx.ToListAsync());
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var adtypes = from at in _context.AdTypes select at;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                adtypes = adtypes.Where(s => s.AdTypeName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    adtypes = adtypes.OrderByDescending(at => at.AdTypeName);
+                    break;
+                default:
+                    adtypes = adtypes.OrderBy(at => at.AdTypeName);
+                    break;
+            }
+
+            int pageSize = 3;
+            return View(await PaginatedList<AdType>.CreateAsync(adtypes.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: AdTypes/Details/5

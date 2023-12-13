@@ -1,0 +1,71 @@
+﻿@model nedv.ViewModel.Apartment.CreateApartmentViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Apartments" asp-action="Index">Квартиры</a></li>
+        <li class="breadcrumb-item active">Создание</li>
+    </ol>
+</nav>
+
+<h3>
+    <a class="btn text-dark" asp-action="Index" title="Вернуться к списку">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    Добавление квартиры
+</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="CountRoom" class="control-label"></label>
+                <input asp-for="CountRoom" class="form-control" />
+                <span asp-validation-for="CountRoom" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NumberOfSquareMeters" class="control-label"></label>
+                <input asp-for="NumberOfSquareMeters" class="form-control" />
+                <span asp-validation-for="NumberOfSquareMeters" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Floor" class="control-label"></label>
+                <input asp-for="Floor" class="form-control" />
+                <span asp-validation-for="Floor" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="IdAdType" class="control-label"></label>
+                <select asp-for="IdAdType" class="form-control" asp-items="ViewBag.IdAdType"></select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="IdTypeOfConstruction" class="control-label"></label>
+                <select asp-for="IdTypeOfConstruction" class ="form-control" asp-items="ViewBag.IdTypeOfConstruction"></select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="IdCity" class="control-label"></label>
+                <select asp-for="IdCity" class ="form-control" asp-items="ViewBag.IdCity"></select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="IdUser" class="control-label"></label>
+                <select asp-for="IdUser" class ="form-control" asp-items="ViewBag.IdUser"></select>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

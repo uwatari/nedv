@@ -24,12 +24,12 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
+            <div class="mb-3">
                 <label asp-for="RegionName" class="control-label"></label>
                 <input asp-for="RegionName" class="form-control" />
                 <span asp-validation-for="RegionName" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="mb-3">
                 <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>

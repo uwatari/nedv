@@ -24,9 +24,8 @@ namespace nedv.Controllers
         }
 
         // GET: Specialties
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            // IdentityUser user = await _userManager.FindByNameAsync(HttpContext.User.Identity.Name);
 
             var appCtx = _context.Cities
                 .Include(s => s.Region)                    // связываем специальности с формами обучения
@@ -127,6 +126,7 @@ namespace nedv.Controllers
             {
                 ModelState.AddModelError("", "Вы не изменили название города");
             }
+
             if (id != city.Id)
             {
                 return NotFound();
