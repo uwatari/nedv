@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using nedv.Models.Data;
-using nedv.Models;
 using nedv.Models;
 using nedv.Models.Data;
 using nedv.ViewModel.Cities;
 
 namespace nedv.Controllers
 {
-    /*    [Authorize(Roles = "admin, registeredUser")]*/
+    [Authorize(Roles = "admin")]
     public class CitiesController : Controller
     {
         private readonly AppCtx _context;

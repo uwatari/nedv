@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
-        <li class="breadcrumb-item"><a asp-controller="Apartments" asp-action="Index">Квартиры</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Apartments" asp-action="Index">Объявления</a></li>
         <li class="breadcrumb-item active">Создание</li>
     </ol>
 </nav>
@@ -16,12 +16,12 @@
     <a class="btn text-dark" asp-action="Index" title="Вернуться к списку">
         <i class="fas fa-arrow-left"></i>
     </a>
-    Добавление квартиры
+    Добавление объявления
 </h3>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
                 <label asp-for="Description" class="control-label"></label>
@@ -37,6 +37,11 @@
                 <label asp-for="NumberOfSquareMeters" class="control-label"></label>
                 <input asp-for="NumberOfSquareMeters" class="form-control" />
                 <span asp-validation-for="NumberOfSquareMeters" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input type="file" asp-for="ImageFile" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Floor" class="control-label"></label>

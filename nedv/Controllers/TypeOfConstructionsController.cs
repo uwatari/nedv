@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
@@ -7,6 +8,7 @@ using nedv.ViewModel.TypeOfConstructions;
 
 namespace nedv.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class TypeOfConstructionsController : Controller
     {
         private readonly AppCtx _context;

@@ -20,9 +20,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                  @*   <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login" title="Главная">
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cities" asp-action="Index">Города</a>
@@ -40,9 +44,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Пользователи</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Apartments" asp-action="Index">Квартиры</a>
-                        </li>
-                    </ul>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Apartments" asp-action="Index">Объявления</a>
+                        </li> 
+                    </ul> *@
                     @if (IsSectionDefined("Header"))
                     {
                         @RenderSection("Header")
@@ -54,19 +58,35 @@
                         {
                             // то он видит вкладку "Главная"
                             <ul class="navbar-nav flex-grow">
-                                <li>
-                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login" title="Главная">
-                                        <i class="fas fa-home"></i>
-                                    </a>
-                                </li>
-
+                                @if (User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(s => s.Value).Contains("registeredUser"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Apartments" asp-action="Index">Объявления</a>
+                                    </li>
+                                }
                                 @*если пользователь с ролью админ, то он получает доступ к работе со всеми пользователями системы*@
                                 @if (User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(s => s.Value).Contains("admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-controller="Users" asp-action="Index" title="Пользователи">
-                                            <i class="far fa-user"></i>  Пользователи
-                                        </a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Cities" asp-action="Index">Города</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Regions" asp-action="Index">Области</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="AdTypes" asp-action="Index">Типы объявления</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="TypeOfConstructions" asp-action="Index">Типы постройки</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Пользователи</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Apartments" asp-action="Index">Объявления</a>
                                     </li>
                                 }
                             </ul>
@@ -79,11 +99,11 @@
                                         <i class="far fa-user-circle"></i>  @User.Identity.Name
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item text-dark" asp-controller="PersonalInfos" asp-action="Index">Личные данные</a>
+                                       @*  <a class="dropdown-item text-dark" asp-controller="PersonalInfos" asp-action="Index">Личные данные</a> *@
                                         <div class="dropdown-item ">
                                             <form class="form-inline" method="post" asp-controller="Account" asp-action="Logout">
                                                 <div class="mb-3">
-                                                    <i class="fas fa-sign-out-alt"></i>
+                                                    @* <i class="fas fa-sign-out-alt"></i> *@
                                                     <input class="btn btn-link text-dark" type="submit" value="Выход" />
                                                 </div>
                                             </form>
@@ -97,10 +117,8 @@
                         else
                         {
                             <ul class="navbar-nav">
-                                <li>
-                                    <a class="nav-link text-dark" asp-controller="Account" asp-action="Login" title="Главная">
-                                        <i class="fas fa-home"></i>
-                                    </a>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                                 </li>
                             </ul>
                             <ul class="navbar-nav">

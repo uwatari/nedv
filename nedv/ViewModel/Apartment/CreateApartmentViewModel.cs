@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace nedv.ViewModel.Apartment
 {
@@ -16,6 +17,13 @@ namespace nedv.ViewModel.Apartment
         [Display(Name = "Этаж")]
         public short Floor { get; set; }
 
+        [Display(Name = "Изображение")]
+        public string? ImgUrl { get; set; }
+
+        [Required(ErrorMessage = "Поле 'Изображение' обязательно для заполнения")]
+        [NotMapped]
+        [Display(Name = "Загрузить изображение")]
+        public IFormFile ImageFile { get; set; }
 
 
         [Required]

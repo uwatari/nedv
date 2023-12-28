@@ -1,80 +1,156 @@
-﻿@model IEnumerable<nedv.Models.Data.Apartment>
+﻿@model PaginatedList<nedv.Models.Data.Apartment>
+
 
 @{
-    ViewData["Title"] = "Квартиры";
+    ViewData["Title"] = "Объявления";
 }
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
-        <li class="breadcrumb-item active">Квартиры</li>
+        <li class="breadcrumb-item active">Объявления</li>
     </ol>
 </nav>
-<h2>Квартиры</h2>
+<h2>Объявления</h2>
+@if (User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(s => s.Value).Contains("admin"))
+{
+    <h6>
+        <a class="btn text-dark" asp-action="Create">
+            <i class="far fa-plus-square"></i>  Добавить объявление
+        </a>
+    </h6>
+    
+}
 
-<h6>
-    <a class="btn text-dark" asp-action="Create">
-        <i class="far fa-plus-square"></i>  Добавить квартиру
-    </a>
-</h6>
-<table class="table">
-    <thead>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Поиск по названию: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Поиск" class="btn btn-default" /> |
+            <a asp-action="Index">Вернуться к списку</a>
+
+            <br />
+            Сортировка по типу <select class="form-select mw-300" style="width: 200px;" name="adTypeId" id="adTypeId" onchange="submitForm(form)">
+                <option value="">Типы объявления</option>
+                @if(ViewBag.Adtypes != null)
+                {
+                    foreach(var adtype in ViewBag.AdTypes as List<nedv.Models.Data.AdType>)
+                    {
+                        <option value="@adtype.Id" selected="@(ViewData["IdAdType"]?.ToString() == adtype.Id.ToString() ? "selected" : null)">
+                            @adtype.AdTypeName
+                        </option>
+                    }
+                }
+            </select>
+        </p>
+    </div>
+</form>
+    
+@* <table class="table"> *@
+@*     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DescriptionSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Описание</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CountRoom)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CountRoomSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Количество комнат</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfSquareMeters)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberOfSquareMetersSortParam"]"
+                asp-route-currentFilter="@ViewData["CurrentFilter"]">Количество квадратных метров</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Floor)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AdTypeSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Тип объявления</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdAdType)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeOfConstructionSortParam"]"
+                asp-route-currentFilter="@ViewData["CurrentFilter"]">Тип конструкции</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TypeOfConstruction)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["FloorSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Этаж</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.City)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CitySortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Город</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["UserSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Пользователь</a>
             </th>
             <th></th>
         </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
+    </thead> *@
+@*  <tbody> *@
+
+<div class="row gy-3">
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-4 col-sm-6">
+            <div class="card">
+                <img class="card-img-img" src="@Html.DisplayFor(modelItem => item.ImgUrl)" alt="Image 1">
+                <div class="card-content" style="">
+                    <div class="title">@Html.DisplayFor(modelItem => item.Description)</div>
+                    <div class="description">Кол-во. кв.м: @Html.DisplayFor(modelItem => item.NumberOfSquareMeters)</div>
+                    <div class="description">Тип объявления: @Html.DisplayFor(modelItem => item.AdType.AdTypeName)</div>
+                    <div class="description">Тип дома: @Html.DisplayFor(modelItem => item.TypeOfConstruction.TypeOfConstructionName)</div>
+                    <div class="description">Этаж: @Html.DisplayFor(modelItem => item.Floor)</div>
+                    <div class="description">Кол.во. комнат: @Html.DisplayFor(modelItem => item.CountRoom)</div>
+                    <div class="description">Город: @Html.DisplayFor(modelItem => item.City.CityName)</div>
+
+                    <hr>
+
+                    @if (User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(s => s.Value).Contains("registeredUser"))
+                    {
+                        <a class="btn text-dark" asp-action="Details" asp-route-id="@item.Id" title="Посмотреть подробнее">
+                            <i class="far fa-eye"></i>
+                        </a>
+                    }
+
+                    @if (User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(s => s.Value).Contains("admin"))
+                    {
+                        <a class="btn text-dark" asp-action="Details" asp-route-id="@item.Id" title="Посмотреть подробнее">
+                            <i class="far fa-eye"></i>
+                        </a>
+
+                        <a class="btn text-dark" asp-action="Edit" asp-route-id="@item.Id" title="Редактировать">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+
+                        <a class="btn text-dark" asp-action="Delete" asp-route-id="@item.Id" title="Удалить">
+                            <i class="far fa-minus-square"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+
+
+
+@*  </td> *@
+@*             <td>
                 @Html.DisplayFor(modelItem => item.CountRoom)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NumberOfSquareMeters)
             </td>
             <td>
+                 @Html.DisplayFor(modelItem => item.AdType.AdTypeName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.TypeOfConstruction.TypeOfConstructionName)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Floor)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.AdType.AdTypeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TypeOfConstruction.TypeOfConstructionName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.City.CityName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.User.Name)
-            </td>
-            <td>
+            </td> *@
+@*   <td>
                     <a class="btn text-dark" asp-action="Details" asp-route-id="@item.Id" title="Посмотреть подробнее">
                         <i class="far fa-eye"></i>
                     </a> |
@@ -84,8 +160,71 @@
                     <a class="btn text-dark" asp-action="Delete" asp-route-id="@item.Id" title="Удалить">
                         <i class="far fa-minus-square"></i>
                     </a>
-            </td>
-        </tr>
+            </td> *@
+@*  </tr> *@
+
+@*     </tbody>
+</table> *@
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-    </tbody>
-</table>
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Назад
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Следующая
+</a>
+
+<script> 
+    function submitForm(form) {
+        form.submit();
+    }
+</script>
+@* <body>
+
+  <div class="card">
+    <img src="https://via.placeholder.com/300" alt="Товар 1">
+    <div class="card-content">
+      <div class="title">Название товара 1</div>
+      <div class="price">Цена: $100</div>
+      <div class="description">Описание товара 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="https://via.placeholder.com/300" alt="Товар 2">
+    <div class="card-content">
+      <div class="title">Название товара 2</div>
+      <div class="price">Цена: $150</div>
+      <div class="description">Описание товара 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+  </div>
+
+</body>
+<div class="card">
+    <img src="https://via.placeholder.com/300" alt="Товар 1">
+    <div class="card-content">
+        <div class="title">Название товара 1</div>
+        <div class="price">Цена: $100</div>
+        <div class="description">Описание товара 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+</div>
+
+<div class="card">
+    <img src="https://via.placeholder.com/300" alt="Товар 2">
+    <div class="card-content">
+        <div class="title">Название товара 2</div>
+        <div class="price">Цена: $150</div>
+        <div class="description">Описание товара 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+    </div>
+</div> *@

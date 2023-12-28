@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Главная</a></li>
-        <li class="breadcrumb-item"><a asp-controller="Apartments" asp-action="Index">Квартиры</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Apartments" asp-action="Index">Объявления</a></li>
         <li class="breadcrumb-item active">Изменение</li>
     </ol>
 </nav>
@@ -16,12 +16,12 @@
     <a class="btn text-dark" asp-action="Index" title="Вернуться к списку">
         <i class="fas fa-arrow-left"></i>
     </a>
-    Изменение квартиры
+    Изменение объявления
 </h3>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="mb-3">
@@ -45,6 +45,11 @@
                 <span asp-validation-for="Floor" class="text-danger"></span>
             </div>
             <div class="mb-3">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input type="file" asp-for="ImageFile" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
                 <label asp-for="IdAdType" class="control-label"></label>
                 <select asp-for="IdAdType" class="form-control" asp-items="ViewBag.IdAdType"></select>
                 <span asp-validation-for="IdAdType" class="text-danger"></span>
@@ -65,14 +70,14 @@
                 <span asp-validation-for="IdUser" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Вернуться к списку</a>
 </div>
 
 @section Scripts {

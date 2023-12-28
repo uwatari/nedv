@@ -11,11 +11,16 @@ namespace nedv.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
@@ -48,6 +53,7 @@ namespace nedv.Controllers
                 {
                     // установка куки
                     await _signInManager.SignInAsync(user, false);
+                    await _userManager.AddToRoleAsync(user, "registeredUser");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -90,13 +96,6 @@ namespace nedv.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            /*}
-            else
-            {
-                ModelState.AddModelError("", "Неправильный логин и (или) пароль");
-            }
-
-            return View(model);*/
         }
 
         [HttpPost]

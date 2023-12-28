@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
@@ -8,6 +9,7 @@ using nedv.ViewModel.Regions;
 
 namespace nedv.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class RegionsController : Controller
     {
         private readonly AppCtx _context;

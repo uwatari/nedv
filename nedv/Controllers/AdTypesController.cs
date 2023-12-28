@@ -4,7 +4,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
 using nedv.Models.Data;
-using nedv.Models.Enums.AdTypeSort;
 using nedv.ViewModel.AdTypes;
 
 namespace nedv.Controllers

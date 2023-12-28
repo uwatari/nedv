@@ -72,7 +72,10 @@
                         </a> |
                         <a class="btn text-dark" asp-action="Delete" asp-route-id="@item.Id" title="Удалить">
                             <i class="far fa-minus-square"></i>
-                        </a>
+                        </a> |
+                        <a class="btn text-dark" asp-action="EditRoles" asp-route-userid="@item.Id" title="Права доступа">
+                            <i class="fas fa-user-tag"></i>
+                        </a> 
                     </form>
                 </td>
             </tr>

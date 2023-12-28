@@ -15,6 +15,8 @@ namespace nedv.Models.Data
         [Display(Name = "Фамилия")]
         public string Surname { get; set; }
 
+        public string FullName => string.Format("{0} {1}", Surname, Name);
+
         [Display(Name = "Дата регистрации")]
         public DateTime RegistrationDate { get; set; }
 

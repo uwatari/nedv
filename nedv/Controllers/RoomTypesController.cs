@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using nedv.Models;
 using nedv.Models.Data;
@@ -6,6 +7,7 @@ using nedv.ViewModel.RoomTypes;
 
 namespace nedv.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class RoomTypesController : Controller
     {
         private readonly AppCtx _context;

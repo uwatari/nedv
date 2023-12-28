@@ -3,7 +3,7 @@
 }
 
 
-@if (User.Identity.IsAuthenticated)
+ @if (User.Identity.IsAuthenticated)
 {
     <p>@User.Identity.Name</p>
 
@@ -11,8 +11,13 @@
         <input type="submit" value="Выход" />
     </form>
 }
-else
+ else
 {
-    <a asp-controller="Account" asp-action="Login">Вход</a>
-    <a asp-controller="Account" asp-action="Register">Регистрация</a>
-}
+    <div class="text-center">
+        <h1 class="display-4">Добро пожаловать!</h1>
+        <p>Авторизируйтесь, чтобы просматривать объявления</p>
+        <p>Если у вас нет аккаунта - зарегестрируйтесь.</p>
+    </div>
+    @* <a asp-controller="Account" asp-action="Login">Вход</a> *@
+   @*  <a asp-controller="Account" asp-action="Register">Регистрация</a> *@
+} 

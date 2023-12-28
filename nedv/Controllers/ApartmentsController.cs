@@ -1,30 +1,123 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client.Extensions.Msal;
 using nedv.Models;
 using nedv.Models.Data;
 using nedv.ViewModel.Apartment;
 
 namespace nedv.Controllers
 {
+    [Authorize(Roles = "admin, registeredUser")]
     public class ApartmentsController : Controller
     {
         private readonly AppCtx _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ApartmentsController(AppCtx context)
+        public ApartmentsController(AppCtx context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Apartments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber, int? adtypeId)
         {
-            var appCtx = _context.Apartments
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DescriptionSortParam"] = String.IsNullOrEmpty(sortOrder) ? "description_desc" : "";
+            ViewData["CountRoomSortParam"] = sortOrder == "countroom" ? "countroom_desc" : "countroom";
+            ViewData["NumberOfSquareMetersSortParam"] = sortOrder == "numberofsquaremeters" ? "numberofsquaremeters_desc" : "numberofsquaremeters";
+            ViewData["AdTypeSortParam"] = sortOrder == "adtype" ? "adtype_desc" : "adtype";
+            ViewData["TypeOfConstructionSortParam"] = sortOrder == "typeofconstruction" ? "typeofconstruction_desc" : "typeofconstruction";
+            ViewData["FloorSortParam"] = sortOrder == "floor" ? "floor_desc" : "floor";
+            ViewData["CitySortParam"] = sortOrder == "city" ? "city_desc" : "city";
+            ViewData["UserSortParam"] = String.IsNullOrEmpty(sortOrder) ? "user_desc" : "";
+
+            ViewData["IdAdType"] =  adtypeId;
+            ViewBag.AdTypes = _context.AdTypes.ToList();
+           /* List<SelectListItem> selectList = new List<SelectListItem>
+            {
+
+            };*/
+
+            var announcement = from a in _context.Apartments.Include(i => i.AdType).Include(i => i.TypeOfConstruction).Include(i => i.City).Include(i => i.User)
+                               select a;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                announcement = announcement.Where(a => a.Description.Contains(searchString));
+            }
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            if (adtypeId.HasValue)
+            {
+                announcement = announcement.Where(w => w.IdAdType == adtypeId.Value);
+            }
+
+            /*switch (sortOrder)
+            {
+                case "countroom":
+                    announcement = announcement.OrderBy(a => a.CountRoom);
+                    break;
+                case "countroom_desc":
+                    announcement = announcement.OrderByDescending(a => a.CountRoom);
+                    break;
+                case "numberofsquaremeters":
+                    announcement = announcement.OrderBy(a => a.NumberOfSquareMeters);
+                    break;
+                case "numberofsquaremeters_desc":
+                    announcement = announcement.OrderByDescending(a => a.NumberOfSquareMeters);
+                    break;
+                case "adtype":
+                    announcement = announcement.OrderBy(a => a.AdType);
+                    break;
+                case "adtype_desc":
+                    announcement = announcement.OrderByDescending(a => a.AdType);
+                    break;
+                case "typeofconstruction":
+                    announcement = announcement.OrderBy(a => a.TypeOfConstruction);
+                    break;
+                case "typeofconstruction_desc":
+                    announcement = announcement.OrderByDescending(a => a.TypeOfConstruction);
+                    break;
+                case "floor":
+                    announcement = announcement.OrderBy(a => a.Floor);
+                    break;
+                case "floor_desc":
+                    announcement = announcement.OrderByDescending(a => a.Floor);
+                    break;
+                case "city":
+                    announcement = announcement.OrderBy(a => a.City);
+                    break;
+                case "city_desc":
+                    announcement = announcement.OrderByDescending(a => a.City);
+                    break;
+                case "user_desc":
+                    announcement = announcement.OrderByDescending(a => a.User);
+                    break;
+                default:
+                    announcement = announcement.OrderBy(a => a.Description);
+                    break;
+            }*/
+
+            int pageSize = 5;
+            return View(await PaginatedList<Apartment>.CreateAsync(announcement.AsNoTracking(), pageNumber ?? 1, pageSize));
+            /*var appCtx = _context.Apartments
                 .Include(a => a.City)
                 .Include(a => a.TypeOfConstruction)
                 .Include(a => a.AdType)
                 .Include(a => a.User);
-            return View(await appCtx.ToListAsync());
+            return View(await appCtx.ToListAsync()); */
+
         }
 
         // GET: Apartments/Details/5
@@ -82,21 +175,39 @@ namespace nedv.Controllers
 
             if (ModelState.IsValid)
             {
-            Apartment apartment = new()
-            {
-                Description = model.Description,
-                CountRoom = model.CountRoom,
-                NumberOfSquareMeters = model.NumberOfSquareMeters,
-                IdCity = model.IdCity,
-                IdUser = model.IdUser,
-                IdAdType = model.IdAdType,
-                IdTypeOfConstruction = model.IdTypeOfConstruction,
-                Floor = model.Floor,
-            };
+                if  (model.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    model.ImgUrl = "/images/" + uniqueFileName;
 
-            _context.Add(apartment);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                    using(var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                }
+                Apartment apartment = new()
+                {
+                    Description = model.Description,
+                    CountRoom = model.CountRoom,
+                    NumberOfSquareMeters = model.NumberOfSquareMeters,
+                    ImgUrl = model.ImgUrl,
+                    IdCity = model.IdCity,
+                    IdUser = model.IdUser,
+                    IdAdType = model.IdAdType,
+                    IdTypeOfConstruction = model.IdTypeOfConstruction,
+                    Floor = model.Floor,
+                };
+
+                _context.Add(apartment);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return NotFound(ModelState);
             }
 
             return View(model);
@@ -116,12 +227,16 @@ namespace nedv.Controllers
                 return NotFound();
             }
 
+
+
             EditApartmentViewModel model = new()
             {
                 Id = apartment.Id,
                 IdCity = apartment.IdCity,
+                Description = apartment.Description,
                 CountRoom = apartment.CountRoom,
                 NumberOfSquareMeters = apartment.NumberOfSquareMeters,
+                ImgUrl = apartment.ImgUrl,
                 Floor = apartment.Floor,
                 IdAdType = apartment.IdAdType,
                 IdTypeOfConstruction = apartment.IdTypeOfConstruction,
@@ -148,6 +263,8 @@ namespace nedv.Controllers
                 .Where(
                     f => f.IdCity == model.IdCity &&
                     f.IdUser == model.IdUser &&
+                    f.ImgUrl == model.ImgUrl &&
+                    f.Description == model.Description &&
                     f.IdAdType == model.IdAdType &&
                     f.IdTypeOfConstruction == model.IdTypeOfConstruction &&
                     f.Floor == model.Floor &&
@@ -163,12 +280,26 @@ namespace nedv.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (model.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    model.ImgUrl = "/images/" + uniqueFileName;
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                }
                 try
                 {
                     apartment.Description = model.Description;
                     apartment.IdAdType = model.IdAdType;
                     apartment.CountRoom = model.CountRoom;
                     apartment.Floor = model.Floor;
+                    apartment.ImgUrl = model.ImgUrl;
                     apartment.NumberOfSquareMeters = model.NumberOfSquareMeters;
                     apartment.IdTypeOfConstruction = model.IdTypeOfConstruction;
                     apartment.IdCity = model.IdCity;
